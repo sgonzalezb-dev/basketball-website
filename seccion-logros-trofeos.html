@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logros y Trofeos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Barlow+Condensed:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #FF6B35;
+            --dark-blue: #0A1128;
+            --electric-blue: #00D9FF;
+            --cream: #FFF8F0;
+            --gray: #2E2E2E;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow Condensed', sans-serif;
+            background: var(--dark-blue);
+            color: var(--cream);
+            padding: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--cream);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--electric-blue));
+            margin: 1rem auto;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .achievement-card {
+            background: var(--gray);
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            border-top: 6px solid transparent;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .achievement-card:hover::before {
+            left: 100%;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.4);
+        }
+
+        .achievement-card.gold {
+            border-top-color: var(--gold);
+        }
+
+        .achievement-card.gold .trophy-icon {
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold);
+        }
+
+        .achievement-card.silver {
+            border-top-color: var(--silver);
+        }
+
+        .achievement-card.silver .trophy-icon {
+            color: var(--silver);
+            text-shadow: 0 0 20px var(--silver);
+        }
+
+        .achievement-card.bronze {
+            border-top-color: var(--bronze);
+        }
+
+        .achievement-card.bronze .trophy-icon {
+            color: var(--bronze);
+            text-shadow: 0 0 20px var(--bronze);
+        }
+
+        .achievement-card.special {
+            border-top-color: var(--electric-blue);
+        }
+
+        .achievement-card.special .trophy-icon {
+            color: var(--electric-blue);
+            text-shadow: 0 0 20px var(--electric-blue);
+        }
+
+        .trophy-icon {
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite, rotate 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes rotate {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+
+        .achievement-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--orange);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        .achievement-desc {
+            font-size: 1.2rem;
+            color: var(--cream);
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .achievement-year {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--electric-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            border: 2px solid var(--electric-blue);
+            transition: all 0.3s;
+        }
+
+        .achievement-card:hover .achievement-year {
+            background: var(--electric-blue);
+            color: var(--dark-blue);
+            transform: scale(1.1);
+        }
+
+        /* Efecto de partículas */
+        .achievement-card::after {
+            content: '✨';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .achievement-card:hover::after {
+            opacity: 1;
+            transform: rotate(360deg);
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .achievement-card {
+            animation: fadeInScale 0.6s ease-out both;
+        }
+
+        .achievement-card:nth-child(1) { animation-delay: 0.1s; }
+        .achievement-card:nth-child(2) { animation-delay: 0.2s; }
+        .achievement-card:nth-child(3) { animation-delay: 0.3s; }
+        .achievement-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Medals adicionales */
+        .medal-count {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--orange);
+            color: var(--dark-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trophy-icon {
+                font-size: 4rem;
+            }
+
+            .achievement-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="achievements">
+        <h2 class="section-title">Logros y Trofeos</h2>
+        <div class="achievements-grid">
+            <div class="achievement-card gold">
+                <div class="medal-count">1</div>
+                <div class="trophy-icon">🏆</div>
+                <h3 class="achievement-title">Campeonato Nacional 2025</h3>
+                <p class="achievement-desc">Campeones Nacionales después de una temporada histórica con 35 victorias y solo 10 derrotas.</p>
+                <span class="achievement-year">2025</span>
+            </div>
+
+            <div class="achievement-card silver">
+                <div class="medal-count">2</div>
+                <div class="trophy-icon">🥈</div>
+                <h3 class="achievement-title">Subcampeones Regionales</h3>
+                <p class="achievement-desc">Segundo lugar en la Final Regional tras una emocionante serie de playoffs contra los mejores equipos.</p>
+                <span class="achievement-year">2024</span>
+            </div>
+
+            <div class="achievement-card bronze">
+                <div class="medal-count">3</div>
+                <div class="trophy-icon">🥉</div>
+                <h3 class="achievement-title">Tercer Lugar Internacional</h3>
+                <p class="achievement-desc">Medalla de bronce en la Copa Internacional representando al país con orgullo y pasión.</p>
+                <span class="achievement-year">2024</span>
+            </div>
+
+            <div class="achievement-card special">
+                <div class="medal-count">★</div>
+                <div class="trophy-icon">⭐</div>
+                <h3 class="achievement-title">Premio Fair Play</h3>
+                <p class="achievement-desc">Reconocimiento al juego limpio, respeto y deportividad mostrados durante toda la temporada.</p>
+                <span class="achievement-year">2025</span>
+            </div>
+
+            <div class="achievement-card special">
+                <div class="medal-count">🔥</div>
+                <div class="trophy-icon">🏀</div>
+                <h3 class="achievement-title">Mejor Ofensiva</h3>
+                <p class="achievement-desc">Equipo con mayor promedio de puntos por partido en la liga con 115.2 PPG.</p>
+                <span class="achievement-year">2025</span>
+            </div>
+
+            <div class="achievement-card special">
+                <div class="medal-count">🛡️</div>
+                <div class="trophy-icon">🔒</div>
+                <h3 class="achievement-title">Mejor Defensiva</h3>
+                <p class="achievement-desc">Líder en estadísticas defensivas permitiendo solo 98.5 puntos por partido al rival.</p>
+                <span class="achievement-year">2025</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Efecto de confeti al hacer hover
+        document.querySelectorAll('.achievement-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02) rotate(1deg)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+            });
+        });
+
+        // Contador animado
+        document.querySelectorAll('.achievement-year').forEach(year => {
+            year.addEventListener('click', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'pulse 0.5s ease-out';
+                }, 10);
+            });
+        });
+    </script>
+</body>
+</html>

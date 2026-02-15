@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Posiciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Barlow+Condensed:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #FF6B35;
+            --dark-blue: #0A1128;
+            --electric-blue: #00D9FF;
+            --cream: #FFF8F0;
+            --gray: #2E2E2E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow Condensed', sans-serif;
+            background: var(--dark-blue);
+            color: var(--cream);
+            padding: 3rem;
+        }
+
+        /* Tabla de Posiciones */
+        .standings {
+            padding: 3rem;
+            background: var(--dark-blue);
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--cream);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--electric-blue));
+            margin: 1rem auto;
+        }
+
+        .standings-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--gray);
+        }
+
+        .standings-table thead {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .standings-table th {
+            padding: 1.5rem 1rem;
+            text-align: left;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--orange);
+            border-bottom: 2px solid var(--orange);
+        }
+
+        .standings-table td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.1rem;
+        }
+
+        .standings-table tbody tr {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .standings-table tbody tr:hover {
+            background: rgba(255, 107, 53, 0.1);
+            transform: translateX(5px);
+        }
+
+        .rank {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: var(--orange);
+            color: var(--dark-blue);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .win-pct {
+            color: var(--electric-blue);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .streak {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .streak.win {
+            background: rgba(0, 255, 0, 0.2);
+            color: #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .streak.lose {
+            background: rgba(255, 0, 0, 0.2);
+            color: #f55;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .position-up {
+            border-left: 4px solid #0f0;
+        }
+
+        .position-down {
+            border-left: 4px solid #f55;
+        }
+
+        /* Animación al cargar */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .standings-table tbody tr {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .standings-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .standings-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        .standings-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        .standings-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        .standings-table tbody tr:nth-child(5) { animation-delay: 0.5s; }
+        .standings-table tbody tr:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .standings-container {
+                overflow-x: scroll;
+            }
+
+            .standings-table th,
+            .standings-table td {
+                padding: 1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="standings">
+        <h2 class="section-title">Tabla de Posiciones</h2>
+        <div class="standings-container">
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipo</th>
+                        <th>PJ</th>
+                        <th>PG</th>
+                        <th>PP</th>
+                        <th>%</th>
+                        <th>Racha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="position-up">
+                        <td><span class="rank">1</span></td>
+                        <td class="team-name">🔥 Thunder</td>
+                        <td>45</td>
+                        <td>35</td>
+                        <td>10</td>
+                        <td class="win-pct">77.8%</td>
+                        <td><span class="streak win">G5</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank">2</span></td>
+                        <td class="team-name">⚡ Lightning</td>
+                        <td>44</td>
+                        <td>32</td>
+                        <td>12</td>
+                        <td class="win-pct">72.7%</td>
+                        <td><span class="streak win">G3</span></td>
+                    </tr>
+                    <tr class="position-up">
+                        <td><span class="rank">3</span></td>
+                        <td class="team-name">🌟 Stars</td>
+                        <td>45</td>
+                        <td>30</td>
+                        <td>15</td>
+                        <td class="win-pct">66.7%</td>
+                        <td><span class="streak win">G2</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank">4</span></td>
+                        <td class="team-name">🦅 Hawks</td>
+                        <td>44</td>
+                        <td>28</td>
+                        <td>16</td>
+                        <td class="win-pct">63.6%</td>
+                        <td><span class="streak lose">P1</span></td>
+                    </tr>
+                    <tr class="position-down">
+                        <td><span class="rank">5</span></td>
+                        <td class="team-name">🐺 Wolves</td>
+                        <td>45</td>
+                        <td>26</td>
+                        <td>19</td>
+                        <td class="win-pct">57.8%</td>
+                        <td><span class="streak lose">P3</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank">6</span></td>
+                        <td class="team-name">🦁 Lions</td>
+                        <td>44</td>
+                        <td>24</td>
+                        <td>20</td>
+                        <td class="win-pct">54.5%</td>
+                        <td><span class="streak win">G1</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        // Ordenar tabla al hacer clic en las columnas
+        document.querySelectorAll('.standings-table th').forEach((header, index) => {
+            if (index > 0) { // Skip el # column
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', () => {
+                    const table = header.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    
+                    rows.sort((a, b) => {
+                        const aValue = a.children[index].textContent;
+                        const bValue = b.children[index].textContent;
+                        
+                        // Si es número
+                        if (!isNaN(aValue) && !isNaN(bValue)) {
+                            return parseFloat(bValue) - parseFloat(aValue);
+                        }
+                        
+                        return aValue.localeCompare(bValue);
+                    });
+                    
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            }
+        });
+    </script>
+</body>
+</html>

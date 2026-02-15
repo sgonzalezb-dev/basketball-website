@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Partidos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Barlow+Condensed:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #FF6B35;
+            --dark-blue: #0A1128;
+            --electric-blue: #00D9FF;
+            --cream: #FFF8F0;
+            --gray: #2E2E2E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow Condensed', sans-serif;
+            background: var(--dark-blue);
+            color: var(--cream);
+            padding: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--cream);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--electric-blue));
+            margin: 1rem auto;
+        }
+
+        .schedule-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .match-card {
+            background: var(--gray);
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2.5rem;
+            align-items: center;
+            transition: all 0.4s;
+            border-left: 6px solid transparent;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .match-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .match-card:hover {
+            transform: translateX(12px);
+            box-shadow: -8px 8px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .match-card.upcoming {
+            border-left-color: var(--electric-blue);
+        }
+
+        .match-card.upcoming:hover {
+            border-left-width: 10px;
+        }
+
+        .match-card.win {
+            border-left-color: #0f0;
+        }
+
+        .match-card.win:hover {
+            box-shadow: -8px 8px 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .match-card.loss {
+            border-left-color: #f55;
+        }
+
+        .match-card.loss:hover {
+            box-shadow: -8px 8px 30px rgba(255, 85, 85, 0.3);
+        }
+
+        .match-date {
+            text-align: center;
+            min-width: 90px;
+            padding: 1rem;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .match-card:hover .match-date {
+            background: rgba(255, 107, 53, 0.2);
+            transform: scale(1.05);
+        }
+
+        .match-date .day {
+            display: block;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3.5rem;
+            color: var(--orange);
+            line-height: 1;
+            text-shadow: 2px 2px 5px rgba(255, 107, 53, 0.3);
+        }
+
+        .match-date .month {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--electric-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .match-info {
+            flex: 1;
+        }
+
+        .match-teams {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .team-home {
+            color: var(--orange);
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .match-card:hover .team-home {
+            color: var(--electric-blue);
+        }
+
+        .vs {
+            color: var(--cream);
+            margin: 0 1.2rem;
+            opacity: 0.5;
+            font-size: 1.3rem;
+        }
+
+        .team-away {
+            color: var(--cream);
+            font-weight: 600;
+        }
+
+        .match-details {
+            display: flex;
+            gap: 2.5rem;
+            font-size: 1.1rem;
+            color: var(--cream);
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        .match-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .match-score {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: var(--orange);
+            margin-top: 0.8rem;
+            text-shadow: 0 2px 5px rgba(255, 107, 53, 0.3);
+        }
+
+        .score-home,
+        .score-away {
+            transition: all 0.3s;
+        }
+
+        .match-card.win:hover .score-home {
+            color: #0f0;
+            transform: scale(1.1);
+        }
+
+        .match-card.loss:hover .score-away {
+            color: #f55;
+            transform: scale(1.1);
+        }
+
+        .score-separator {
+            margin: 0 1rem;
+            color: var(--cream);
+            opacity: 0.5;
+        }
+
+        .match-status {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .upcoming-badge {
+            background: rgba(0, 217, 255, 0.2);
+            color: var(--electric-blue);
+            border: 2px solid var(--electric-blue);
+            animation: pulse 2s infinite;
+        }
+
+        .win-badge {
+            background: rgba(0, 255, 0, 0.2);
+            color: #0f0;
+            border: 2px solid #0f0;
+        }
+
+        .loss-badge {
+            background: rgba(255, 0, 0, 0.2);
+            color: #f55;
+            border: 2px solid #f55;
+        }
+
+        .match-card:hover .badge {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Filtros */
+        .schedule-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid var(--orange);
+            color: var(--orange);
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--orange);
+            color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Estadísticas rápidas */
+        .quick-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--gray);
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            color: var(--orange);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--electric-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .match-card {
+            animation: fadeInLeft 0.6s ease-out both;
+        }
+
+        .match-card:nth-child(1) { animation-delay: 0.1s; }
+        .match-card:nth-child(2) { animation-delay: 0.2s; }
+        .match-card:nth-child(3) { animation-delay: 0.3s; }
+        .match-card:nth-child(4) { animation-delay: 0.4s; }
+        .match-card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .match-card {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .match-date {
+                margin: 0 auto;
+            }
+
+            .match-teams {
+                font-size: 1.3rem;
+            }
+
+            .match-details {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .quick-stats {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="schedule">
+        <h2 class="section-title">Calendario de Partidos</h2>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="quick-stats">
+            <div class="stat-item">
+                <span class="stat-value">15</span>
+                <span class="stat-label">Victorias</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">7</span>
+                <span class="stat-label">Derrotas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">68%</span>
+                <span class="stat-label">% Victoria</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">G3</span>
+                <span class="stat-label">Racha</span>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="schedule-filters">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="upcoming">Próximos</button>
+            <button class="filter-btn" data-filter="completed">Completados</button>
+        </div>
+
+        <!-- Calendario -->
+        <div class="schedule-container">
+            <div class="match-card upcoming" data-type="upcoming">
+                <div class="match-date">
+                    <span class="day">15</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">HOOPS</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">Thunder</span>
+                    </div>
+                    <div class="match-details">
+                        <span class="time">⏰ 19:00</span>
+                        <span class="venue">📍 Arena Central</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge upcoming-badge">Próximo</span>
+                </div>
+            </div>
+
+            <div class="match-card upcoming" data-type="upcoming">
+                <div class="match-date">
+                    <span class="day">18</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">Lightning</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">HOOPS</span>
+                    </div>
+                    <div class="match-details">
+                        <span class="time">⏰ 20:30</span>
+                        <span class="venue">📍 Pabellón Norte</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge upcoming-badge">Próximo</span>
+                </div>
+            </div>
+
+            <div class="match-card completed win" data-type="completed">
+                <div class="match-date">
+                    <span class="day">10</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">HOOPS</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">Stars</span>
+                    </div>
+                    <div class="match-score">
+                        <span class="score-home">115</span>
+                        <span class="score-separator">-</span>
+                        <span class="score-away">102</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge win-badge">Victoria</span>
+                </div>
+            </div>
+
+            <div class="match-card completed loss" data-type="completed">
+                <div class="match-date">
+                    <span class="day">08</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">Hawks</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">HOOPS</span>
+                    </div>
+                    <div class="match-score">
+                        <span class="score-home">108</span>
+                        <span class="score-separator">-</span>
+                        <span class="score-away">104</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge loss-badge">Derrota</span>
+                </div>
+            </div>
+
+            <div class="match-card completed win" data-type="completed">
+                <div class="match-date">
+                    <span class="day">05</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">HOOPS</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">Wolves</span>
+                    </div>
+                    <div class="match-score">
+                        <span class="score-home">121</span>
+                        <span class="score-separator">-</span>
+                        <span class="score-away">98</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge win-badge">Victoria</span>
+                </div>
+            </div>
+
+            <div class="match-card completed win" data-type="completed">
+                <div class="match-date">
+                    <span class="day">02</span>
+                    <span class="month">FEB</span>
+                </div>
+                <div class="match-info">
+                    <div class="match-teams">
+                        <span class="team-home">HOOPS</span>
+                        <span class="vs">VS</span>
+                        <span class="team-away">Lions</span>
+                    </div>
+                    <div class="match-score">
+                        <span class="score-home">118</span>
+                        <span class="score-separator">-</span>
+                        <span class="score-away">109</span>
+                    </div>
+                </div>
+                <div class="match-status">
+                    <span class="badge win-badge">Victoria</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Sistema de filtros
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const matchCards = document.querySelectorAll('.match-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remover active de todos
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Agregar active al clickeado
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+
+                matchCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'grid';
+                        card.style.animation = 'fadeInLeft 0.6s ease-out';
+                    } else {
+                        if (card.dataset.type === filter) {
+                            card.style.display = 'grid';
+                            card.style.animation = 'fadeInLeft 0.6s ease-out';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Click en partido para más detalles
+        matchCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const teams = this.querySelector('.match-teams').textContent;
+                alert(`Ver detalles del partido: ${teams}`);
+                // Aquí podrías abrir un modal o redirigir a una página de detalles
+            });
+        });
+    </script>
+</body>
+</html>
